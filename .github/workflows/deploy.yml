@@ -29,11 +29,15 @@ jobs:
         service_account_key: ${{ secrets.GCP_KEY }}
         export_default_credentials: true
 
-    # Step 4: Build the project with Maven
+    # Step 4: Authenticate Google Cloud
+    - name: Authenticate with Google Cloud
+      run: gcloud auth activate-service-account --key-file="${{ secrets.GCP_KEY }}"
+    
+    # Step 5: Build the project with Maven
     - name: Build with Maven
       run: mvn clean package
 
-    # Step 5: Deploy to Google Cloud Functions
+    # Step 6: Deploy to Google Cloud Functions
     - name: Deploy to Google Cloud Functions
       run: |
         gcloud functions deploy getFromBunnyFunction \

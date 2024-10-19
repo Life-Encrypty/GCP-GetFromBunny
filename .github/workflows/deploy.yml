@@ -1,10 +1,10 @@
-name: Deploy to Google Cloud Functions
+name: Deploy Google Cloud Function
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:  # Allows for manual triggers
 
 jobs:
   deploy:
@@ -15,32 +15,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Set up Java (Java 21 for your project)
-    - name: Set up JDK 21
-      uses: actions/setup-java@v3
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-
-    # Step 3: Set up Google Cloud SDK
+    # Step 2: Set up Google Cloud SDK
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_KEY }}
         export_default_credentials: true
 
-    # Step 4: Authenticate Google Cloud using the key file
-    - name: Authenticate with Google Cloud
-      run: |
-        echo "${{ secrets.GCP_KEY }}" | base64 --decode > "${{ github.workspace }}/gcp-key.json"
-        gcloud auth activate-service-account --key-file="${{ github.workspace }}/gcp-key.json"
-
-    # Step 5: Build the project with Maven
+    # Step 3: Build the project
     - name: Build with Maven
       run: mvn clean package
 
-    # Step 6: Deploy to Google Cloud Functions
-    - name: Deploy to Google Cloud Functions
+    # Step 4: Deploy to Google Cloud Functions
+    - name: Deploy to Cloud Function
       run: |
         gcloud functions deploy getFromBunnyFunction \
           --entry-point=com.gcfv2.GetFromBunny \

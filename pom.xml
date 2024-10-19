@@ -1,16 +1,15 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>cloud-function-sample</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>gcfv2</groupId>
+    <artifactId>http</artifactId>
+    <version>0.0.1</version>
+    <name>HTTP Function</name>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
     <dependencies>
@@ -22,25 +21,25 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.8.1</version> <!-- Make sure to use a recent version of the plugin -->
+              <configuration>
+                  <source>21</source> <!-- Use Java 21 as the source -->
+                  <target>21</target> <!-- Use Java 21 as the target -->
+              </configuration>
+          </plugin>
+
+          <plugin>
+             <groupId>com.google.cloud.functions</groupId>
+             <artifactId>function-maven-plugin</artifactId>
+             <version>0.11.0</version>
+             <configuration>
+                 <functionTarget>com.gcfv2.GetFromBunny</functionTarget>
+             </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+      </plugins>
+  </build>
 </project>

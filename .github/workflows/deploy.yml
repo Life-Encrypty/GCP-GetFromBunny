@@ -3,8 +3,8 @@ name: Deploy to Google Cloud Functions
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to the main branch
-  workflow_dispatch:  # This allows manual triggering
+      - main
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   deploy:
@@ -27,13 +27,14 @@ jobs:
       uses: google-github-actions/setup-gcloud@v1
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_KEY }}
         export_default_credentials: true
 
-    # Step 4: Authenticate Google Cloud
+    # Step 4: Authenticate Google Cloud using the key file
     - name: Authenticate with Google Cloud
-      run: gcloud auth activate-service-account --key-file="${{ secrets.GCP_KEY }}"
-    
+      run: |
+        echo "${{ secrets.GCP_KEY }}" > "${{ github.workspace }}/gcp-key.json"
+        gcloud auth activate-service-account --key-file="${{ github.workspace }}/gcp-key.json"
+
     # Step 5: Build the project with Maven
     - name: Build with Maven
       run: mvn clean package

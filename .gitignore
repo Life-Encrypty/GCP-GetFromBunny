@@ -1,0 +1,83 @@
+# Maven target directory
+/target/
+
+# Maven specific files
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Logs
+*.log
+
+# Eclipse specific files
+.project
+.classpath
+.settings/
+
+# IntelliJ IDEA specific files
+.idea/
+*.iml
+*.iws
+out/
+
+# VS Code specific files
+.vscode/
+
+# Compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Windows specific files
+*.bat
+*.cmd
+
+# macOS specific files
+*.DS_Store
+
+# Temporary files
+*.tmp
+*.swp
+*~ 
+
+# Other temporary files
+*.bak
+*.backup
+*.orig
+*.rej
+
+# Logs and debug files
+*.log
+*.gz
+*.tgz
+*.zip
+*.tar
+*.rar
+
+# Generated files
+*.class
+*.exe
+*.dll
+*.so
+*.o
+*.out
+*.app
+*.bin
+*.dmg
+*.iso
+
+# Gradle-specific files (in case you switch to Gradle)
+.gradle/
+build/

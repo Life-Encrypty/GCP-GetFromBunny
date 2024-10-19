@@ -25,6 +25,9 @@ jobs:
       with:
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        create_credentials_file: true
+        export_environment_variables: true
 
     # Step 3: Set up Google Cloud SDK
     - name: Set up Google Cloud SDK

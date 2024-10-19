@@ -32,7 +32,7 @@ jobs:
     # Step 4: Authenticate Google Cloud using the key file
     - name: Authenticate with Google Cloud
       run: |
-        printf '%s' "${{ secrets.GCP_KEY }}" > "${{ github.workspace }}/gcp-key.json"
+        echo "${{ secrets.GCP_KEY }}" | base64 --decode > "${{ github.workspace }}/gcp-key.json"
         gcloud auth activate-service-account --key-file="${{ github.workspace }}/gcp-key.json"
 
     # Step 5: Build the project with Maven

@@ -368,3 +368,24 @@ To avoid incurring charges, destroy the resources when no longer needed:
 
 **Note:** Replace placeholders like `"your-gcp-project-id"` and file paths with your actual project ID and paths.
 
+---
+
+### **API Request Format**
+
+This API accepts `POST` requests, and the request body **must be in JSON format**. The structure of the JSON should follow the template below. Note that **all keys are case-sensitive**, meaning they must be provided exactly as shown:
+
+`{`  
+    `"contentName": "name.mp4",`   
+    `"storageZoon": "g",`   
+    `"path": "Content/name.mp4",`  
+    `"link": "https://GuardXpert.b-cdn.net/Content2/name.mp4",`  
+    `"ftp": {`  
+        `"useName": "username",`   
+        `"password": "password",`   
+        `"Hostname": "storage.bunnycdn.com",`  
+        `"port": "21"`  
+    `}`  
+`}`
+
+Make sure to use the correct key names and casing when constructing your JSON request.
+

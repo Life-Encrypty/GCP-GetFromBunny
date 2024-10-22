@@ -18,6 +18,10 @@ import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URI;
+
 public class GetFromBunny implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response) throws Exception {
@@ -106,6 +110,10 @@ public class GetFromBunny implements HttpFunction {
           System.out.println("Uploading JSON metadata to Google Cloud Storage: " + jsonFileName);
           storage.create(jsonBlobInfo, jsonData.getBytes());
 
+          String videoName = "{\"videoName\": \""+bunnyRequest.getContentName().replace(".mp4", "")+"\"}";
+          System.out.println("Start Transcoder : "+videoName);
+          startNext(videoName);
+          
           // Respond with success
           System.out.println("File and metadata transferred successfully");
           response.setStatusCode(200);
@@ -123,4 +131,23 @@ public class GetFromBunny implements HttpFunction {
           }
       }
   }
+
+    private void startNext(String jsonData) throws Exception {
+        // Create a URI and convert it to a URL
+        URI uri = new URI("https://gcp-starttranscoder-ybcltje4mq-ue.a.run.app"); // Replace with your next function's URL
+        URL url = uri.toURL();  // Convert the URI to a URL
+
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; utf-8");
+        connection.setDoOutput(true);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonData.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = connection.getResponseCode();
+        System.out.println("Next function response code: " + responseCode);
+    }
 }

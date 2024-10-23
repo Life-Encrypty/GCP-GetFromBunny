@@ -24,6 +24,7 @@ This guide provides step-by-step instructions to deploy a Java-based Google Clou
   * Monitoring and Logging  
   * Security Considerations  
   * Cleaning Up Resources  
+* API Request Format  
 * Commit Messages
 
 ---
@@ -339,53 +340,35 @@ To avoid incurring charges, destroy the resources when no longer needed:
 
 ---
 
+## **API Request Format**
+
+This API accepts `POST` requests, and the request body **must be in JSON format**. The structure of the JSON should follow the template below. Note that **all keys are case-sensitive**, meaning they must be provided exactly as shown:
+
+```
+{
+    "contentName": "name.mp4",
+    "storageZoon": "g",
+    "path": "Content/name.mp4",
+    "link": "https://GuardXpert.b-cdn.net/Content2/name.mp4",
+    "ftp": {
+        "useName": "username",
+        "password": "password",
+        "Hostname": "storage.bunnycdn.com",
+        "port": "21"
+    }
+}
+```
+
+Make sure to use the correct key names and casing when constructing your JSON request.
+
+---
+
 ## **Commit Messages**
 
-### **Terraform Work**
-
-`feat(terraform): add Terraform configuration for deploying Cloud Function`
-
-`- Added Terraform scripts to automate the deployment of the Java-based Google Cloud Function.`  
-`- Configured resources for Cloud Function, Storage Bucket, and IAM policies.`  
-`- Enabled unauthenticated invocations by granting 'roles/cloudfunctions.invoker' to 'allUsers'.`
-
-### **Maven Shade Plugin Configuration**
-
-`build(maven): configure Maven Shade Plugin to create an uber JAR`
-
-`- Updated pom.xml to include Maven Shade Plugin configuration.`  
-`- Enabled creation of an uber JAR containing all dependencies.`  
-`- Ensured compatibility with Google Cloud Functions deployment requirements.`
-
-### **Removal of GitHub Actions Workflow**
-
-`ci(github-actions): remove GitHub Actions workflow`
-
-``- Deleted the GitHub Actions workflow file `deploy.yml`.``  
-`- Transitioned deployment process to manual or alternative CI/CD system.`
+Commit Messages must follow `"https://www.conventionalcommits.org/en/v1.0.0/"`
 
 ---
 
 **Note:** Replace placeholders like `"your-gcp-project-id"` and file paths with your actual project ID and paths.
 
----
-
-### **API Request Format**
-
-This API accepts `POST` requests, and the request body **must be in JSON format**. The structure of the JSON should follow the template below. Note that **all keys are case-sensitive**, meaning they must be provided exactly as shown:
-
-`{`  
-    `"contentName": "name.mp4",`   
-    `"storageZoon": "g",`   
-    `"path": "Content/name.mp4",`  
-    `"link": "https://GuardXpert.b-cdn.net/Content2/name.mp4",`  
-    `"ftp": {`  
-        `"useName": "username",`   
-        `"password": "password",`   
-        `"Hostname": "storage.bunnycdn.com",`  
-        `"port": "21"`  
-    `}`  
-`}`
-
-Make sure to use the correct key names and casing when constructing your JSON request.
 

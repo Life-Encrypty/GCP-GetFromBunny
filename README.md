@@ -75,7 +75,7 @@ This guide provides step-by-step instructions to deploy a Java-based Google Clou
 `</properties>`
 
 **Include the Maven Shade Plugin:**
-
+```
 `<build>`  
     `<plugins>`  
         `<!-- Maven Compiler Plugin -->`  
@@ -108,9 +108,9 @@ This guide provides step-by-step instructions to deploy a Java-based Google Clou
         `</plugin>`  
     `</plugins>`  
 `</build>`
-
+```
 **Implement the Cloud Function:**
-
+```
 `package com.gcfv2;`
 
 `import com.google.cloud.functions.HttpFunction;`  
@@ -126,7 +126,7 @@ This guide provides step-by-step instructions to deploy a Java-based Google Clou
         `writer.write("Hello from Java Cloud Function!");`  
     `}`  
 `}`
-
+```
 ---
 
 ## **Step 2: Configure Terraform**
@@ -135,13 +135,16 @@ This guide provides step-by-step instructions to deploy a Java-based Google Clou
 
 Create a `terraform` directory and navigate into it:
 
+```
 `mkdir terraform`  
 `cd terraform`
+```
 
 ### **2.2. Define Variables**
 
 Create `variables.tf`:
 
+```
 `variable "project_id" {`  
   `description = "The GCP project ID"`  
 `}`
@@ -168,11 +171,13 @@ Create `variables.tf`:
   `description = "Memory allocated to the function (in MB)"`  
   `default     = 1024`  
 `}`
+```
 
 ### **2.3. Configure the Provider**
 
 Create `provider.tf`:
 
+```
 `terraform {`  
   `required_version = ">= 0.13"`  
   `required_providers {`  
@@ -187,11 +192,13 @@ Create `provider.tf`:
   `project = var.project_id`  
   `region  = var.region`  
 `}`
+```
 
 ### **2.4. Define Resources**
 
 Create `main.tf`:
 
+```
 `resource "google_storage_bucket" "function_source_bucket" {`  
   `name          = "${var.project_id}-function-source"`  
   `location      = var.region`  
@@ -216,11 +223,13 @@ Create `main.tf`:
   `source_archive_bucket = google_storage_bucket.function_source_bucket.name`  
   `source_archive_object = google_storage_bucket_object.function_source_archive.name`  
 `}`
+```
 
 ### **2.5. Configure IAM Permissions**
 
 Create `iam.tf`:
 
+```
 `resource "google_cloudfunctions_function_iam_member" "allow_all_users_invoker" {`  
   `project        = var.project_id`  
   `region         = var.region`  
@@ -228,15 +237,18 @@ Create `iam.tf`:
   `role           = "roles/cloudfunctions.invoker"`  
   `member         = "allUsers"`  
 `}`
+```
 
 ### **2.6. Output Variables**
 
 Create `outputs.tf`:
 
+```
 `output "function_url" {`  
   `value       = google_cloudfunctions_function.function.https_trigger_url`  
   `description = "The URL of the deployed Cloud Function"`  
 `}`
+```
 
 ---
 
@@ -244,6 +256,7 @@ Create `outputs.tf`:
 
 Create a batch script `package_function.bat` in the project root:
 
+```
 `@echo off`  
 `set JAR_FILE=target\http-0.0.1.jar`  
 `set ZIP_FILE=function_source.zip`
@@ -258,10 +271,14 @@ Create a batch script `package_function.bat` in the project root:
 `powershell -Command "Compress-Archive -Path '%JAR_FILE%' -DestinationPath '%ZIP_FILE%' -Force"`
 
 `ECHO Packaged function into %ZIP_FILE%`  
+```
+
 **Build and Package the Function:**
 
+```
 `mvn clean package`  
 `package_function.bat`
+```
 
 ---
 
@@ -285,12 +302,15 @@ Alternatively, authenticate using `gcloud`:
 
 **Create `terraform.tfvars`:**
 
+```
+
 `project_id    = "your-gcp-project-id"`  
 `function_name = "GCP-GetFromBunny"`  
 `entry_point   = "com.gcfv2.GetFromBunny"`  
 `region        = "us-east1"`  
 `runtime       = "java17"`  
 `memory        = 1024`
+```
 
 **Plan the Deployment:**
 

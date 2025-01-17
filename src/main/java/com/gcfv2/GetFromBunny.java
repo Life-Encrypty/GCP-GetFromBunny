@@ -54,6 +54,8 @@ public class GetFromBunny implements HttpFunction {
       System.out.println("FTP User: " + ftpUser);
       System.out.println("Remote File Path: " + remoteFilePath);
 
+      notify(bunnyRequest.getContentName(), "info", "Start Transferring file from Bunny CDN to GCS");
+
       // Connect to Bunny CDN via FTP
       FTPClient ftpClient = new FTPClient();
       try {
@@ -86,6 +88,7 @@ public class GetFromBunny implements HttpFunction {
               return;
           }
           System.out.println("File retrieved successfully from FTP");
+          notify(bunnyRequest.getContentName(), "info", "File retrieved successfully from Bunny CDN");
 
           // Upload the video file to GCS
           String bucketName = "gard-test";
@@ -118,6 +121,7 @@ public class GetFromBunny implements HttpFunction {
           System.out.println("File and metadata transferred successfully");
           response.setStatusCode(200);
           response.getWriter().write("File transferred successfully");
+          notify(bunnyRequest.getContentName(), "info", "File transferred successfully to GCS and Transcoder Started");
       } catch (Exception e) {
           e.printStackTrace();
           System.out.println("Error occurred: " + e.getMessage());
@@ -150,4 +154,48 @@ public class GetFromBunny implements HttpFunction {
         int responseCode = connection.getResponseCode();
         System.out.println("Next function response code: " + responseCode);
     }
+
+    private void notify(String contentID, String status, String message) throws Exception {
+        // Construct the JSON payload
+        String jsonPayload = String.format(
+            "{\"contentID\":\"%s\",\"status\":\"%s\",\"message\":\"%s\"}",
+            contentID, status, message
+        );
+
+        // Define the API endpoint URL
+        URI uri = new URI("https://guardxpert.com/api/ContentService/Notification/CloudFunctionWebhook");
+        URL url = uri.toURL();
+
+        // Open a connection to the URL
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; utf-8");
+        connection.setDoOutput(true);
+
+        // Write the JSON payload to the request body
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonPayload.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        // Get and log the response code
+        int responseCode = connection.getResponseCode();
+        System.out.println("Notification API response code: " + responseCode);
+
+        // Optionally, read the response (if required)
+        if (responseCode >= 200 && responseCode < 300) {
+            try (InputStream is = connection.getInputStream()) {
+                String response = new String(is.readAllBytes(), "utf-8");
+                System.out.println("Notification API response: " + response);
+            }
+        } else {
+            try (InputStream es = connection.getErrorStream()) {
+                if (es != null) {
+                    String errorResponse = new String(es.readAllBytes(), "utf-8");
+                    System.out.println("Notification API error response: " + errorResponse);
+                }
+            }
+        }
+    }
+
 }
